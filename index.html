@@ -1,52 +1,77 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0077ff">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c10">
     <title>RuYT</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%237C6CFF'/%3E%3Cpath d='M12 9.5v13l11-6.5z' fill='%23fff'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div id="app">
+    <!-- Шапка: логотип · вкладки (десктоп) · поиск · действия -->
+    <header class="topbar glass" id="topbar">
+        <div class="logo" data-act="home" role="link" aria-label="RuYT — на главную">
+            <i><span class="ms f">play_arrow</span></i><b>Ru<span>YT</span></b>
+        </div>
 
-        <header class="header">
-            <div class="header-title">RuYT</div>
-        </header>
+        <div class="seg in" id="topTabs" style="--n:3;--i:0">
+            <button data-act="tab" data-tab="video"><span class="ms">smart_display</span>Видео</button>
+            <button data-act="tab" data-tab="media"><span class="ms">article</span>Медиа</button>
+            <button data-act="tab" data-tab="toki"><span class="ms">bolt</span>Токи</button>
+        </div>
 
-        <main class="content">
+        <div class="sbox-wrap">
+            <div class="sbox" id="sbox">
+                <form class="sfield" id="sform" role="search" action="#">
+                    <span class="ms">search</span>
+                    <input id="q" type="text" inputmode="search" enterkeyhint="search" autocomplete="off"
+                        autocapitalize="off" spellcheck="false" placeholder="Поиск видео" aria-label="Поиск видео">
+                    <button type="button" class="clear" id="qclear" hidden aria-label="Очистить"><span class="ms">close</span></button>
+                    <button type="submit" class="go">Найти</button>
+                </form>
+            </div>
+        </div>
 
-            <section class="search">
-                <input id="search-input" class="input" type="search" placeholder="Поиск видео" autocomplete="off">
+        <div class="top-actions">
+            <button class="btn accent hide-c" data-act="upload"><span class="ms">add</span>Создать</button>
+            <button class="ibtn hide-c" data-act="bellnote" aria-label="Уведомления"><span class="ms">notifications</span></button>
+            <img class="av" id="meAv" data-act="amenu" width="44" height="44" alt="Профиль" style="width:44px;height:44px;cursor:pointer">
+        </div>
+    </header>
 
-                <button id="search-button" class="button">
-                    Найти
-                </button>
-            </section>
+    <div class="sugg glass-pop" id="sugg" hidden></div>
 
-            <p id="search-status" class="status"></p>
+    <button class="back-fab ibtn dg" data-act="back" aria-label="Назад"><span class="ms">arrow_back</span></button>
 
-            <section id="results" class="results"></section>
+    <main id="view"></main>
 
-            <section id="player-section" class="player-section" hidden>
+    <!-- Док (десктоп) -->
+    <nav class="dock glass" id="dock" aria-label="Навигация"></nav>
 
-                <button id="back-button" class="back-button">
-                    ← Назад к результатам
-                </button>
+    <!-- Нижняя панель (планшет / телефон) -->
+    <nav class="mnav" id="mnav" aria-label="Навигация">
+        <div class="seg" id="mTabs" style="--n:3;--i:0">
+            <button data-act="tab" data-tab="video"><span class="ms">smart_display</span>Видео</button>
+            <button data-act="tab" data-tab="media"><span class="ms">article</span>Медиа</button>
+            <button data-act="tab" data-tab="toki"><span class="ms">bolt</span>Токи</button>
+        </div>
+        <button class="plus" data-act="upload" aria-label="Создать"><span class="ms">add</span></button>
+    </nav>
 
-                <video id="video-player" class="video-player" controls playsinline></video>
+    <div id="layer"></div>
+    <div id="toastHost"></div>
 
-                <h1 id="video-title" class="video-title"></h1>
-                <p id="video-channel" class="video-channel"></p>
-
-            </section>
-
-        </main>
-    </div>
-
-    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    <!-- VK Mini App (необязательно): инициализация после загрузки моста -->
+    <script async src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"
+        onload="window.vkBridge&&vkBridge.send('VKWebAppInit').catch(function(){})"></script>
+    <script src="data.js"></script>
     <script src="app.js"></script>
 </body>
 
