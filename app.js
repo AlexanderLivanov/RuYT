@@ -34,21 +34,25 @@ downloadButton.addEventListener("click", () => {
         return;
     }
 
-    if (!url.includes("youtube.com/") && !url.includes("youtu.be/")) {
-        downloadStatus.textContent = "Нужна ссылка на YouTube";
+    const match = url.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+
+    if (!match) {
+        downloadStatus.textContent = "Не удалось определить видео";
         return;
     }
 
-    const serverUrl = "https://dustore.ru/download.php";
+    const videoId = match[1];
 
     const streamUrl =
-        serverUrl + "?url=" + encodeURIComponent(url);
+        "https://dustore.ru/stream.php?id=" +
+        encodeURIComponent(videoId);
 
     downloadStatus.textContent = "Загружаем видео...";
 
     videoPlayer.src = streamUrl;
     videoPlayer.hidden = false;
-
     videoPlayer.load();
 
     videoPlayer.play().catch(() => {});
@@ -59,7 +63,7 @@ videoPlayer.addEventListener("loadeddata", () => {
 });
 
 videoPlayer.addEventListener("error", () => {
-    downloadStatus.textContent = "Не удалось загрузить видео";
+    downloadStatus.textContent = "Ошибка загрузки видео";
 });
 
 init();
