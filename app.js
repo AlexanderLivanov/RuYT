@@ -3,6 +3,7 @@ const userInfoElement = document.getElementById("user-info");
 const videoUrlElement = document.getElementById("video-url");
 const downloadButton = document.getElementById("download-button");
 const downloadStatus = document.getElementById("download-status");
+const videoPlayer = document.getElementById("video-player");
 
 async function init() {
     try {
@@ -38,14 +39,27 @@ downloadButton.addEventListener("click", () => {
         return;
     }
 
-    downloadStatus.textContent = "Начинаем скачивание...";
-
     const serverUrl = "https://dustore.ru/download.php";
 
-    const downloadUrl =
+    const streamUrl =
         serverUrl + "?url=" + encodeURIComponent(url);
 
-    window.location.href = downloadUrl;
+    downloadStatus.textContent = "Загружаем видео...";
+
+    videoPlayer.src = streamUrl;
+    videoPlayer.hidden = false;
+
+    videoPlayer.load();
+
+    videoPlayer.play().catch(() => {});
+});
+
+videoPlayer.addEventListener("loadeddata", () => {
+    downloadStatus.textContent = "Видео готово";
+});
+
+videoPlayer.addEventListener("error", () => {
+    downloadStatus.textContent = "Не удалось загрузить видео";
 });
 
 init();

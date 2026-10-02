@@ -1,51 +1,13 @@
-<!DOCTYPE html>
-<html lang="ru">
+<section class="card">
+    <div class="card-title">YouTube</div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0077ff">
-    <title>RuYT</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <input id="video-url" class="input" type="url" placeholder="Вставь ссылку на YouTube" autocomplete="off">
 
-<body>
-    <div id="app">
-        <header class="header">
-            <div class="header-title">RuYT</div>
-        </header>
+    <button id="download-button" class="button">
+        Смотреть
+    </button>
 
-        <main class="content">
-            <section class="hero">
-                <div class="hero-icon">RY</div>
-                <h1>RuYT</h1>
-                <p id="status">Загрузка...</p>
-            </section>
+    <p id="download-status" class="download-status"></p>
 
-            <section class="card">
-                <div class="card-title">Скачать видео</div>
-
-                <input id="video-url" class="input" type="url" placeholder="Вставь ссылку на YouTube"
-                    autocomplete="off">
-
-                <button id="download-button" class="button">
-                    Скачать
-                </button>
-
-                <p id="download-status" class="download-status"></p>
-            </section>
-
-            <section class="card">
-                <div class="card-title">Пользователь</div>
-                <div id="user-info" class="user-info">
-                    Авторизация...
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-    <script src="app.js"></script>
-</body>
-
-</html>
+    <video id="video-player" class="video-player" controls playsinline hidden></video>
+</section>
