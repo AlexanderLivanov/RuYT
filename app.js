@@ -1,69 +1,131 @@
-const statusElement = document.getElementById("status");
-const userInfoElement = document.getElementById("user-info");
-const videoUrlElement = document.getElementById("video-url");
-const downloadButton = document.getElementById("download-button");
-const downloadStatus = document.getElementById("download-status");
+const searchInput = document.getElementById("search-input");
+const searchButton = document.getElementById("search-button");
+const searchStatus = document.getElementById("search-status");
+const resultsElement = document.getElementById("results");
+
+const playerSection = document.getElementById("player-section");
 const videoPlayer = document.getElementById("video-player");
+const videoTitle = document.getElementById("video-title");
+const videoChannel = document.getElementById("video-channel");
+const backButton = document.getElementById("back-button");
+
+const searchServer = "https://dustore.ru/s.php";
+const streamServer = "https://dustore.ru/stream.php";
 
 async function init() {
     try {
         await vkBridge.send("VKWebAppInit");
-
-        statusElement.textContent = "Приложение запущено";
-
-        const user = await vkBridge.send("VKWebAppGetUserInfo");
-
-        const firstName = user.first_name || "";
-        const lastName = user.last_name || "";
-
-        userInfoElement.textContent =
-            `${firstName} ${lastName}`.trim() || "Пользователь VK";
     } catch (error) {
         console.error(error);
-
-        statusElement.textContent = "Приложение запущено";
-        userInfoElement.textContent = "Открыто вне VK";
     }
 }
 
-downloadButton.addEventListener("click", () => {
-    const url = videoUrlElement.value.trim();
+async function searchVideos() {
+    const query = searchInput.value.trim();
 
-    if (!url) {
-        downloadStatus.textContent = "Вставь ссылку на YouTube";
+    if (query.length < 2) {
+        searchStatus.textContent = "Введите хотя бы 2 символа";
         return;
     }
 
-    const match = url.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
+    searchStatus.textContent = "Ищем...";
+    resultsElement.innerHTML = "";
 
-    if (!match) {
-        downloadStatus.textContent = "Не удалось определить видео";
-        return;
+    try {
+        const response = await fetch(
+            searchServer + "?q=" + encodeURIComponent(query)
+        );
+
+        if (!response.ok) {
+            throw new Error("Search request failed");
+        }
+
+        const data = await response.json();
+
+        if (!data.results || data.results.length === 0) {
+            searchStatus.textContent = "Ничего не найдено";
+            return;
+        }
+
+        searchStatus.textContent = "";
+
+        data.results.forEach(video => {
+            const element = document.createElement("div");
+
+            element.className = "result";
+
+            element.innerHTML = `
+                <img
+                    class="thumbnail"
+                    src="${video.thumbnail}"
+                    alt=""
+                >
+
+                <div class="result-info">
+                    <div class="result-title">
+                        ${escapeHtml(video.title)}
+                    </div>
+
+                    <div class="result-channel">
+                        ${escapeHtml(video.channel)}
+                    </div>
+                </div>
+            `;
+
+            element.addEventListener("click", () => {
+                playVideo(video);
+            });
+
+            resultsElement.appendChild(element);
+        });
+
+    } catch (error) {
+        console.error(error);
+        searchStatus.textContent = "Ошибка поиска";
     }
+}
 
-    const videoId = match[1];
-
+function playVideo(video) {
     const streamUrl =
-        "https://dustore.ru/stream.php?id=" +
-        encodeURIComponent(videoId);
+        streamServer + "?id=" + encodeURIComponent(video.id);
 
-    downloadStatus.textContent = "Загружаем видео...";
+    resultsElement.hidden = true;
+    searchStatus.hidden = true;
+    playerSection.hidden = false;
+
+    videoTitle.textContent = video.title;
+    videoChannel.textContent = video.channel;
 
     videoPlayer.src = streamUrl;
-    videoPlayer.hidden = false;
     videoPlayer.load();
 
     videoPlayer.play().catch(() => {});
+}
+
+function backToResults() {
+    videoPlayer.pause();
+    videoPlayer.removeAttribute("src");
+    videoPlayer.load();
+
+    playerSection.hidden = true;
+    resultsElement.hidden = false;
+    searchStatus.hidden = false;
+}
+
+function escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = value || "";
+    return div.innerHTML;
+}
+
+searchButton.addEventListener("click", searchVideos);
+
+searchInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        searchVideos();
+    }
 });
 
-videoPlayer.addEventListener("loadeddata", () => {
-    downloadStatus.textContent = "Видео готово";
-});
-
-videoPlayer.addEventListener("error", () => {
-    downloadStatus.textContent = "Ошибка загрузки видео";
-});
+backButton.addEventListener("click", backToResults);
 
 init();
