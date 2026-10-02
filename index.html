@@ -5,21 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0077ff">
-    <title>VK Mini App</title>
+    <title>RuYT</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="app">
         <header class="header">
-            <div class="header-title">Моё приложение</div>
+            <div class="header-title">RuYT</div>
         </header>
 
         <main class="content">
             <section class="hero">
-                <div class="hero-icon">VK</div>
-                <h1>Привет</h1>
+                <div class="hero-icon">RY</div>
+                <h1>RuYT</h1>
                 <p id="status">Загрузка...</p>
+            </section>
+
+            <section class="card">
+                <div class="card-title">Скачать видео</div>
+
+                <input id="video-url" class="input" type="url" placeholder="Вставь ссылку на YouTube"
+                    autocomplete="off">
+
+                <button id="download-button" class="button">
+                    Скачать
+                </button>
+
+                <p id="download-status" class="download-status"></p>
             </section>
 
             <section class="card">
@@ -28,16 +41,6 @@
                     Авторизация...
                 </div>
             </section>
-
-            <div class="download">
-                <input id="video-url" type="url" placeholder="Ссылка на YouTube" autocomplete="off">
-            
-                <button id="download-button" class="button">
-                    Скачать видео
-                </button>
-            
-                <p id="download-status"></p>
-            </div>
         </main>
     </div>
 

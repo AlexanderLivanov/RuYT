@@ -1,27 +1,8 @@
 const statusElement = document.getElementById("status");
 const userInfoElement = document.getElementById("user-info");
-const actionButton = document.getElementById("action-button");
-
-const videoUrl = document.getElementById("video-url");
+const videoUrlElement = document.getElementById("video-url");
 const downloadButton = document.getElementById("download-button");
 const downloadStatus = document.getElementById("download-status");
-
-downloadButton.addEventListener("click", () => {
-    const url = videoUrl.value.trim();
-
-    if (!url) {
-        downloadStatus.textContent = "Вставь ссылку на YouTube";
-        return;
-    }
-
-    downloadStatus.textContent = "Скачивание началось...";
-
-    const downloadUrl =
-        "https://dustore.ru/download.php?url=" +
-        encodeURIComponent(url);
-
-    window.location.href = downloadUrl;
-});
 
 async function init() {
     try {
@@ -34,7 +15,8 @@ async function init() {
         const firstName = user.first_name || "";
         const lastName = user.last_name || "";
 
-        userInfoElement.textContent = `${firstName} ${lastName}`.trim() || "Пользователь VK";
+        userInfoElement.textContent =
+            `${firstName} ${lastName}`.trim() || "Пользователь VK";
     } catch (error) {
         console.error(error);
 
@@ -43,8 +25,27 @@ async function init() {
     }
 }
 
-actionButton.addEventListener("click", () => {
-    statusElement.textContent = "Кнопка работает";
+downloadButton.addEventListener("click", () => {
+    const url = videoUrlElement.value.trim();
+
+    if (!url) {
+        downloadStatus.textContent = "Вставь ссылку на YouTube";
+        return;
+    }
+
+    if (!url.includes("youtube.com/") && !url.includes("youtu.be/")) {
+        downloadStatus.textContent = "Нужна ссылка на YouTube";
+        return;
+    }
+
+    downloadStatus.textContent = "Начинаем скачивание...";
+
+    const serverUrl = "https://dustore.ru/download.php";
+
+    const downloadUrl =
+        serverUrl + "?url=" + encodeURIComponent(url);
+
+    window.location.href = downloadUrl;
 });
 
 init();
